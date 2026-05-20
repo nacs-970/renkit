@@ -27,3 +27,17 @@ export function pickRandomWeighted(places: Place[]): Place {
   const randomIndex = Math.floor(Math.random() * weightedList.length);
   return weightedList[randomIndex];
 }
+
+export const MapsService = {
+  async fetchNearbyPlaces(location: string, radius: number): Promise<Place[]> {
+    console.log(`Searching near ${location} with radius ${radius}km`);
+    // Mocking the API response for now
+    return [
+      { id: '1', name: 'Artisan Coffee House', rating: 4.8 },
+      { id: '2', name: 'Old Town Library', rating: 4.5 },
+      { id: '3', name: 'Central Park Garden', rating: 4.2 },
+      { id: '4', name: 'Local Museum', rating: 3.9 },
+      { id: '5', name: 'High-End Bistro', rating: 4.9 },
+    ];
+  }
+};
