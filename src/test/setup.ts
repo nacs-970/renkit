@@ -11,7 +11,7 @@ const localStorageMock = (function() {
   };
 })();
 
-Object.defineProperty(global, 'localStorage', {
+Object.defineProperty(globalThis, 'localStorage', {
   value: localStorageMock
 });
 
