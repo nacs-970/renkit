@@ -40,8 +40,12 @@ export const ArchiveBook = ({ onClose }: Props) => {
         </div>
       ) : (
         <div className={styles.grid}>
-          {archive.map((ticket) => (
-            <div key={`${ticket.id}-${ticket.date}`} className={styles.gridItem}>
+          {archive.map((ticket, index) => (
+            <div 
+              key={`${ticket.id}-${ticket.date}`} 
+              className={styles.gridItem}
+              style={{ animationDelay: `${index * 0.03}s` }}
+            >
               <div className={styles.ticketWrapper}>
                 <TearableTicket 
                   ticket={{

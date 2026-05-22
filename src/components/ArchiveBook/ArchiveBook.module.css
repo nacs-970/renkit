@@ -45,9 +45,15 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  transition: transform 0.2s;
+  gap: 10px;
+  transition: transform 0.2s, border-color 0.2s;
   box-shadow: var(--shadow);
+  animation: itemEntrance 0.5s ease-out both;
+}
+
+@keyframes itemEntrance {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .gridItem:hover {
@@ -59,12 +65,11 @@
   display: flex;
   justify-content: center;
   overflow: hidden;
-  height: 300px; /* Cropped view of the ticket */
+  height: auto;
 }
 
 .miniTicket {
-  transform: scale(0.7);
-  transform-origin: top center;
+  --t-scale: 0.7;
   pointer-events: none; /* Make it non-interactive in the archive */
 }
 

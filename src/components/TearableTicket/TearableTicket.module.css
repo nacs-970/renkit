@@ -1,7 +1,9 @@
 .container {
-  width: 280px;
-  height: 400px;
-  border: 1px solid var(--text-h);
+  --t-scale: 1;
+  width: calc(280px * var(--t-scale));
+  min-height: calc(400px * var(--t-scale));
+  height: auto;
+  border: calc(1px * var(--t-scale)) solid var(--text-h);
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -20,7 +22,7 @@
 
 .main {
   flex-grow: 1;
-  padding: 20px;
+  padding: calc(20px * var(--t-scale));
   display: flex;
   flex-direction: column;
 }
@@ -28,45 +30,50 @@
 /* Base Header */
 .header {
   text-align: center;
-  border-bottom: 1px solid var(--text-h);
-  padding-bottom: 10px;
-  margin-bottom: 25px;
+  border-bottom: calc(1px * var(--t-scale)) solid var(--text-h);
+  padding-bottom: calc(10px * var(--t-scale));
+  margin-bottom: calc(25px * var(--t-scale));
 }
 
 .header h1 {
-  font-size: 20px;
+  font-size: calc(20px * var(--t-scale));
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: calc(2px * var(--t-scale));
   font-weight: normal;
 }
 
 /* Style: Classic (Default) */
 .classic {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Times New Roman', Times, serif !important;
+}
+
+.classic * {
+  font-family: 'Times New Roman', Times, serif !important;
 }
 
 .classic .header {
   border-bottom-style: double;
-  border-bottom-width: 3px;
+  border-bottom-width: calc(3px * var(--t-scale));
 }
 
 /* Style: Modern */
 .modern {
   font-family: system-ui, -apple-system, sans-serif;
-  border-radius: 10px;
+  border-radius: calc(12px * var(--t-scale));
 }
 
 .modern .header {
   border-bottom: none;
   background: var(--text-h);
   color: var(--bg);
-  margin: -30px -20px 20px -20px;
+  margin: calc(-20px * var(--t-scale)) calc(-20px * var(--t-scale)) calc(25px * var(--t-scale)) calc(-20px * var(--t-scale));
+  padding: calc(20px * var(--t-scale));
 }
 
 .modern .header h1 {
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: calc(-0.5px * var(--t-scale));
 }
 
 .modern .tagline {
@@ -77,12 +84,12 @@
 /* Style: Mono (Brutalist) */
 .mono {
   font-family: ui-monospace, 'Cascadia Code', monospace;
-  border-width: 2px;
+  border-width: calc(2px * var(--t-scale));
 }
 
 .mono .header {
   text-align: left;
-  border-bottom-width: 2px;
+  border-bottom-width: calc(2px * var(--t-scale));
 }
 
 .mono .header h1 {
@@ -94,21 +101,21 @@
   background: var(--text-h);
   color: var(--bg);
   display: inline-block;
-  padding: 2px 4px;
-  margin-bottom: 10px;
+  padding: calc(2px * var(--t-scale)) calc(4px * var(--t-scale));
+  margin-bottom: calc(10px * var(--t-scale));
 }
 
 /* Content & Layout */
 .tagline {
-  font-size: 8px;
-  margin-top: 4px;
+  font-size: calc(8px * var(--t-scale));
+  margin-top: calc(4px * var(--t-scale));
   display: block;
   color: var(--text);
   text-transform: uppercase;
 }
 
 .content {
-  margin-bottom: 30px;
+  margin-bottom: calc(30px * var(--t-scale));
   text-align: center;
 }
 
@@ -117,15 +124,15 @@
 }
 
 .label {
-  font-size: 10px;
+  font-size: calc(10px * var(--t-scale));
   text-transform: uppercase;
   color: var(--text);
-  margin-bottom: 8px;
+  margin-bottom: calc(8px * var(--t-scale));
   opacity: 0.7;
 }
 
 .destinationName {
-  font-size: 28px;
+  font-size: calc(28px * var(--t-scale));
   margin: 0;
   font-weight: normal;
   line-height: 1.1;
@@ -141,14 +148,14 @@
 }
 
 .address {
-  font-size: 11px;
-  margin: 12px 0;
+  font-size: calc(11px * var(--t-scale));
+  margin: calc(12px * var(--t-scale)) 0;
   color: var(--text);
 }
 
 .footer {
-  border-top: 1px dashed var(--border);
-  padding-top: 20px;
+  border-top: calc(1px * var(--t-scale)) dashed var(--border);
+  padding-top: calc(20px * var(--t-scale));
   margin-top: auto;
   display: flex;
   justify-content: space-between;
@@ -156,11 +163,11 @@
 
 .mono .footer {
   border-top-style: solid;
-  border-top-width: 2px;
+  border-top-width: calc(2px * var(--t-scale));
 }
 
 .metaLabel {
-  font-size: 9px;
+  font-size: calc(9px * var(--t-scale));
   text-transform: uppercase;
   color: var(--text);
   display: block;
@@ -168,6 +175,6 @@
 }
 
 .metaValue {
-  font-size: 14px;
-  margin: 4px 0 0;
+  font-size: calc(14px * var(--t-scale));
+  margin: calc(4px * var(--t-scale)) 0 0;
 }
