@@ -7,6 +7,8 @@
   align-items: center;
   padding: 20px;
   transition: background-color 0.3s ease, color 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 main {
@@ -15,11 +17,18 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .welcome-screen {
   text-align: center;
   width: 100%;
+  padding-top: 40px;
 }
 
 .logo-text {
@@ -29,6 +38,25 @@ main {
   letter-spacing: 4px;
   margin-bottom: 10px;
   color: var(--text-h);
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 32px;
+  }
+  
+  .top-nav {
+    top: auto !important;
+    bottom: 20px !important;
+    right: 50% !important;
+    transform: translateX(50%) !important;
+    width: max-content;
+    background: var(--bg);
+    padding: 10px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
 }
 
 .intro-text {
@@ -43,12 +71,54 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 15px; /* Reduced gap for closer slot proximity */
+  position: relative;
+}
+
+.mail-system {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  padding-top: 5px;
+  width: 100%;
+}
+
+.tear-hint {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent);
+  opacity: 0.6;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mail Slot Target */
+.mail-slot {
+  width: 290px;
+  height: 8px;
+  background: var(--text-h);
+  border-radius: 0; /* Sharp edges */
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  animation: slotPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slotPop {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
 }
 
 .stage-actions {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 15px;
 }
 
 .secondary-button {
@@ -62,11 +132,35 @@ main {
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .secondary-button:hover {
   background: var(--accent-bg);
   border-color: var(--accent);
+}
+
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-h);
+  color: var(--bg);
+  padding: 10px 25px;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 1000;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: var(--shadow);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .top-nav {
@@ -99,3 +193,26 @@ main {
 }
 
 .loading-screen {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-screen p {
+  font-family: 'Times New Roman', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--text);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.archiving {
+  transform: translateY(-50%) scaleY(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.3s 0.1s !important;
+}

@@ -12,6 +12,8 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [view, setView] = useState<'main' | 'archive'>('main');
+  const [showToast, setShowToast] = useState(false);
+  const [isArchiving, setIsArchiving] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -42,18 +44,30 @@ function App() {
     }
   };
 
-  const handleTearComplete = (tearPath: string) => {
-    if (currentTicket) {
+  const handleArchive = () => {
+    if (!currentTicket || isArchiving) return;
+    
+    setIsArchiving(true);
+    
+    // Animate archiving (slide into mail slot)
+    setTimeout(() => {
       StorageService.saveToArchive({
         id: currentTicket.id,
         name: currentTicket.name,
-        tearPath: tearPath
+        tearPath: ''
       });
-    }
+      
+      setCurrentTicket(null);
+      setIsArchiving(false);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }, 600);
   };
 
   return (
     <div className="app-container">
+      {showToast && <div className="toast">Ticket Archived</div>}
+      
       <div className="top-nav">
         <button className="nav-button" onClick={() => setView(view === 'main' ? 'archive' : 'main')}>
           {view === 'main' ? '📜 Archive' : '🎫 Generator'}
@@ -70,7 +84,7 @@ function App() {
           <>
             {!currentTicket && !isGenerating && (
               <div className="welcome-screen">
-                <h1 className="logo-text">Random Ticket</h1>
+                <h1 className="logo-text">Renkit</h1>
                 <p className="intro-text">Discover your next local destination with a simple tear.</p>
                 <LocationScanner onGenerate={handleGenerate} />
               </div>
@@ -84,23 +98,35 @@ function App() {
 
             {currentTicket && (
               <div className="ticket-stage">
-                <TearableTicket 
-                  ticket={{
-                    name: currentTicket.name,
-                    address: currentTicket.address || 'Local discovery',
-                    type: currentTicket.type || 'Experience',
-                    distance: currentTicket.distance || 'Nearby'
-                  }} 
-                  onTearComplete={handleTearComplete}
-                />
-                <div className="stage-actions">
-                  <button onClick={handleRepick} className="secondary-button">
-                    Get Another Option
-                  </button>
-                  <button onClick={() => setCurrentTicket(null)} className="secondary-button">
-                    Start Over
-                  </button>
+                <div className="mail-system">
+                  {isArchiving ? (
+                    <div className="mail-slot" />
+                  ) : (
+                    <div className="tear-hint">Tap to Collect</div>
+                  )}
+                  
+                  <TearableTicket 
+                    ticket={{
+                      name: currentTicket.name,
+                      address: currentTicket.address || 'Local discovery',
+                      type: currentTicket.type || 'Experience',
+                      distance: currentTicket.distance || 'Nearby'
+                    }} 
+                    onClick={handleArchive}
+                    className={isArchiving ? 'archiving' : ''}
+                  />
                 </div>
+
+                {!isArchiving && (
+                  <div className="stage-actions">
+                    <button onClick={handleRepick} className="secondary-button">
+                      Get Another Option
+                    </button>
+                    <button onClick={() => setCurrentTicket(null)} className="secondary-button">
+                      Start Over
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </>

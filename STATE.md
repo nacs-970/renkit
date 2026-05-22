@@ -1,4 +1,4 @@
-# Project State: Random Ticket
+# Project State: Renkit
 
 **Last Updated:** 2026-05-22
 **Current Phase:** Polishing / Review

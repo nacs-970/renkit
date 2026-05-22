@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renkit Tear Demo</title>
+    <style>
+        :root {
+            --bg: #16171d;
+            --text: #f3f4f6;
+            --accent: #c084fc;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Times New Roman', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .demo-container {
+            position: relative;
+            width: 300px;
+            height: 500px;
+            perspective: 1000px;
+        }
+        .ticket {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            color: #000;
+            border: 1px solid #000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s;
+            transform-origin: top center;
+        }
+        .ticket-content {
+            flex: 1;
+            padding: 30px;
+            text-align: center;
+        }
+        .stub {
+            height: 100px;
+            border-top: 1px dashed #000;
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .tear-surface {
+            position: absolute;
+            top: 400px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 10;
+            cursor: ns-resize;
+        }
+        .instruction {
+            margin-bottom: 20px;
+            font-style: italic;
+            opacity: 0.7;
+        }
+        /* New physics-based tear classes */
+        .torn-away {
+            transform: translateY(-100vh) rotate(-15deg) scale(0.9) !important;
+            opacity: 0 !important;
+        }
+        .shake {
+            animation: shake 0.1s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            50% { transform: translate(-1px, -1px) rotate(0.5deg); }
+            100% { transform: translate(1px, -1px) rotate(-0.5deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="instruction">Drag the perforation line quickly to tear</div>
+    <div class="demo-container" id="container">
+        <div class="ticket" id="ticket">
+            <div class="ticket-content">
+                <h1>Renkit</h1>
+                <p>PROTOTYPE V2</p>
+                <div style="margin-top: 100px; font-size: 40px;">★</div>
+            </div>
+            <div class="stub">Archive Stub</div>
+        </div>
+    </div>
+
+    <script>
+        const ticket = document.getElementById('ticket');
+        const container = document.getElementById('container');
+        let isDragging = false;
+        let startY = 0;
+        let currentY = 0;
+        const PERF_Y = 400;
+
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            ticket.classList.add('shake');
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            currentY = e.clientY;
+            const delta = startY - currentY;
+            
+            if (delta > 0) {
+                // Pulling up
+                const rotation = Math.min(delta / 10, 5);
+                ticket.style.transform = `translateY(${-delta * 0.2}px) rotate(${-rotation}deg)`;
+                
+                if (delta > 150) {
+                    completeTear();
+                }
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            ticket.classList.remove('shake');
+            if (!ticket.classList.contains('torn-away')) {
+                ticket.style.transform = '';
+            }
+        });
+
+        function completeTear() {
+            isDragging = false;
+            ticket.classList.remove('shake');
+            ticket.classList.add('torn-away');
+            
+            // Haptic
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+
+            setTimeout(() => {
+                alert('Ticket Collected!');
+                reset();
+            }, 800);
+        }
+
+        function reset() {
+            ticket.classList.remove('torn-away');
+            ticket.style.transform = 'translateY(100vh)';
+            setTimeout(() => {
+                ticket.style.transform = '';
+            }, 100);
+        }
+    </script>
+</body>
+</html>
