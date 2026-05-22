@@ -1,3 +1,4 @@
+import { TearableTicket, type TicketStyle } from '../TearableTicket/TearableTicket';
 import styles from './Settings.module.css';
 
 interface Props {
@@ -5,9 +6,18 @@ interface Props {
   onClose: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  ticketStyle: TicketStyle;
+  onSetTicketStyle: (style: TicketStyle) => void;
 }
 
-export const Settings = ({ isOpen, onClose, theme, onToggleTheme }: Props) => {
+export const Settings = ({ 
+  isOpen, 
+  onClose, 
+  theme, 
+  onToggleTheme, 
+  ticketStyle, 
+  onSetTicketStyle 
+}: Props) => {
   if (!isOpen) return null;
 
   const handleAccentChange = (color: string) => {
@@ -19,6 +29,12 @@ export const Settings = ({ isOpen, onClose, theme, onToggleTheme }: Props) => {
     document.documentElement.style.setProperty('--accent-bg', `rgba(${r}, ${g}, ${b}, 0.15)`);
   };
 
+  const styles_list: { id: TicketStyle; label: string }[] = [
+    { id: 'classic', label: 'Classic' },
+    { id: 'modern', label: 'Modern' },
+    { id: 'mono', label: 'Mono' },
+  ];
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -26,6 +42,33 @@ export const Settings = ({ isOpen, onClose, theme, onToggleTheme }: Props) => {
           <h2 className={styles.title}>Settings</h2>
           <button className={styles.closeButton} onClick={onClose}>&times;</button>
         </header>
+
+        <section className={styles.section}>
+          <span className={styles.sectionTitle}>Ticket Style Preview</span>
+          <div className={styles.previewWrapper}>
+            <TearableTicket 
+              ticket={{
+                name: 'Preview Spot',
+                address: '123 Discovery Lane',
+                type: 'Cafe & Culture',
+                distance: '1.2 km'
+              }}
+              ticketStyle={ticketStyle}
+              className={styles.previewTicket}
+            />
+          </div>
+          <div className={styles.styleGrid}>
+            {styles_list.map((s) => (
+              <button 
+                key={s.id}
+                className={`${styles.styleButton} ${ticketStyle === s.id ? styles.styleButtonActive : ''}`}
+                onClick={() => onSetTicketStyle(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </section>
 
         <section className={styles.section}>
           <span className={styles.sectionTitle}>Preferences</span>

@@ -8,7 +8,12 @@
   padding: 20px;
   transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto; /* Changed from hidden to auto */
+}
+
+.app-container.archive-view {
+  align-items: flex-start; /* Don't center vertically in archive */
+  padding-top: 80px;
 }
 
 main {
@@ -18,6 +23,10 @@ main {
   flex-direction: column;
   align-items: center;
   animation: fadeIn 0.5s ease-out;
+}
+
+main.wide {
+  max-width: 1200px; /* Allow archive to be wider */
 }
 
 @keyframes fadeIn {

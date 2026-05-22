@@ -1,6 +1,6 @@
 .container {
-  padding: 20px;
-  max-width: 600px;
+  padding: 40px 20px;
+  max-width: 1000px;
   margin: 0 auto;
   color: var(--text-h);
 }
@@ -9,72 +9,105 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 .title {
   font-family: 'Times New Roman', serif;
-  font-size: 24px;
+  font-size: 32px;
   margin: 0;
+  letter-spacing: 2px;
 }
 
 .closeButton {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 5px 15px;
+  background: var(--text-h);
+  border: none;
+  color: var(--bg);
+  padding: 8px 20px;
   cursor: pointer;
   font-size: 12px;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.list {
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.gridItem {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-}
-
-.ticketItem {
-  border: 1px solid var(--border);
-  padding: 15px;
-  background: var(--bg);
-  position: relative;
+  gap: 20px;
   transition: transform 0.2s;
+  box-shadow: var(--shadow);
 }
 
-.ticketItem:hover {
-  transform: translateY(-2px);
+.gridItem:hover {
+  transform: translateY(-5px);
   border-color: var(--accent);
 }
 
-.ticketHeader {
+.ticketWrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 10px;
+  justify-content: center;
+  overflow: hidden;
+  height: 300px; /* Cropped view of the ticket */
 }
 
-.name {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0;
+.miniTicket {
+  transform: scale(0.7);
+  transform-origin: top center;
+  pointer-events: none; /* Make it non-interactive in the archive */
+}
+
+.ticketInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .date {
   font-size: 11px;
   color: var(--text);
   opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.memo {
+.memoDisplay {
+  cursor: pointer;
+  min-height: 40px;
+}
+
+.memoText {
   font-size: 14px;
   font-style: italic;
   color: var(--text);
-  margin: 10px 0;
+  margin: 0;
   padding-left: 10px;
   border-left: 2px solid var(--accent);
+  line-height: 1.4;
+}
+
+.memoPlaceholder {
+  font-size: 12px;
+  color: var(--accent);
+  margin: 0;
+  opacity: 0.7;
+}
+
+.editArea {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .memoInput {
@@ -82,15 +115,34 @@
   background: var(--social-bg);
   border: 1px solid var(--border);
   color: var(--text-h);
-  padding: 8px;
+  padding: 10px;
   font-family: inherit;
-  font-size: 13px;
-  margin-top: 5px;
+  font-size: 14px;
+  min-height: 60px;
+  resize: vertical;
+}
+
+.saveButton {
+  align-self: flex-end;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 5px 15px;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
 }
 
 .emptyState {
   text-align: center;
-  padding: 40px;
+  padding: 80px 20px;
   color: var(--text);
   font-style: italic;
+  font-size: 18px;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,5 +1,7 @@
 import styles from './TearableTicket.module.css';
 
+export type TicketStyle = 'classic' | 'modern' | 'mono';
+
 interface Props {
   ticket: {
     name: string;
@@ -9,12 +11,13 @@ interface Props {
   };
   onClick?: () => void;
   className?: string;
+  ticketStyle?: TicketStyle;
 }
 
-export const TearableTicket = ({ ticket, onClick, className }: Props) => {
+export const TearableTicket = ({ ticket, onClick, className, ticketStyle = 'classic' }: Props) => {
   return (
     <div 
-      className={`${styles.container} ${className || ''}`}
+      className={`${styles.container} ${styles[ticketStyle]} ${className || ''}`}
       onClick={onClick}
     >
       <div className={styles.main}>

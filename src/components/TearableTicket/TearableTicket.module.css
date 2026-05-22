@@ -4,7 +4,6 @@
   border: 1px solid var(--text-h);
   display: flex;
   flex-direction: column;
-  font-family: 'Times New Roman', Times, serif;
   background: var(--bg);
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -12,7 +11,7 @@
   color: var(--text-h);
   position: relative;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s, border-color 0.3s;
 }
 
 .container:hover {
@@ -26,6 +25,7 @@
   flex-direction: column;
 }
 
+/* Base Header */
 .header {
   text-align: center;
   border-bottom: 1px solid var(--text-h);
@@ -39,15 +39,72 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   font-weight: normal;
-  color: var(--text-h);
 }
 
+/* Style: Classic (Default) */
+.classic {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.classic .header {
+  border-bottom-style: double;
+  border-bottom-width: 3px;
+}
+
+/* Style: Modern */
+.modern {
+  font-family: system-ui, -apple-system, sans-serif;
+  border-radius: 10px;
+}
+
+.modern .header {
+  border-bottom: none;
+  background: var(--text-h);
+  color: var(--bg);
+  margin: -30px -20px 20px -20px;
+}
+
+.modern .header h1 {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.modern .tagline {
+  color: var(--bg);
+  opacity: 0.8;
+}
+
+/* Style: Mono (Brutalist) */
+.mono {
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  border-width: 2px;
+}
+
+.mono .header {
+  text-align: left;
+  border-bottom-width: 2px;
+}
+
+.mono .header h1 {
+  font-weight: bold;
+  letter-spacing: 0;
+}
+
+.mono .label {
+  background: var(--text-h);
+  color: var(--bg);
+  display: inline-block;
+  padding: 2px 4px;
+  margin-bottom: 10px;
+}
+
+/* Content & Layout */
 .tagline {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 8px;
   margin-top: 4px;
   display: block;
   color: var(--text);
+  text-transform: uppercase;
 }
 
 .content {
@@ -55,8 +112,11 @@
   text-align: center;
 }
 
+.mono .content {
+  text-align: left;
+}
+
 .label {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   text-transform: uppercase;
   color: var(--text);
@@ -69,11 +129,18 @@
   margin: 0;
   font-weight: normal;
   line-height: 1.1;
-  color: var(--text-h);
+}
+
+.modern .destinationName {
+  font-weight: 700;
+}
+
+.mono .destinationName {
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .address {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
   margin: 12px 0;
   color: var(--text);
@@ -87,8 +154,12 @@
   justify-content: space-between;
 }
 
+.mono .footer {
+  border-top-style: solid;
+  border-top-width: 2px;
+}
+
 .metaLabel {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 9px;
   text-transform: uppercase;
   color: var(--text);
@@ -99,5 +170,4 @@
 .metaValue {
   font-size: 14px;
   margin: 4px 0 0;
-  color: var(--text-h);
 }

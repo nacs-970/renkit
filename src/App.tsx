@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { LocationScanner } from './components/LocationScanner/LocationScanner';
-import { TearableTicket } from './components/TearableTicket/TearableTicket';
+import { TearableTicket, type TicketStyle } from './components/TearableTicket/TearableTicket';
 import { ArchiveBook } from './components/ArchiveBook/ArchiveBook';
 import { Settings } from './components/Settings/Settings';
 import { MapsService, pickRandomWeighted, type Place } from './services/maps.service';
@@ -18,6 +18,7 @@ function App() {
   const [isPrinting, setIsPrinting] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [ticketKey, setTicketKey] = useState(0);
+  const [ticketStyle, setTicketStyle] = useState<TicketStyle>('classic');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -101,7 +102,10 @@ function App() {
       StorageService.saveToArchive({
         id: currentTicket.id,
         name: currentTicket.name,
-        tearPath: ''
+        address: currentTicket.address || 'Local discovery',
+        type: currentTicket.type || 'Experience',
+        distance: currentTicket.distance || 'Nearby',
+        style: ticketStyle
       });
       
       setCurrentTicket(null);
@@ -112,7 +116,7 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${view === 'archive' ? 'archive-view' : ''}`}>
       {showToast && <div className="toast">Ticket Archived</div>}
       
       <Settings 
@@ -120,6 +124,8 @@ function App() {
         onClose={() => setIsSettingsOpen(false)} 
         theme={theme}
         onToggleTheme={toggleTheme}
+        ticketStyle={ticketStyle}
+        onSetTicketStyle={setTicketStyle}
       />
 
       <div className="top-nav">
@@ -131,7 +137,7 @@ function App() {
         </button>
       </div>
 
-      <main>
+      <main className={view === 'archive' ? 'wide' : ''}>
         {view === 'archive' ? (
           <ArchiveBook onClose={() => setView('main')} />
         ) : (
@@ -163,13 +169,13 @@ function App() {
                     key={isPrinting ? `${currentTicket.id}-${Date.now()}` : `${currentTicket.id}-${ticketKey}`}
                     ticket={{
                       name: currentTicket.name,
-
                       address: currentTicket.address || 'Local discovery',
                       type: currentTicket.type || 'Experience',
                       distance: currentTicket.distance || 'Nearby'
                     }} 
                     onClick={handleArchive}
                     className={`${isArchiving ? 'archiving' : ''} ${isPrinting ? 'printing' : ''}`}
+                    ticketStyle={ticketStyle}
                   />
                 </div>
 

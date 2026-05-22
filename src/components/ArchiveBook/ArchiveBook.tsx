@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StorageService, type ArchivedTicket } from '../../services/storage.service';
+import { TearableTicket } from '../TearableTicket/TearableTicket';
 import styles from './ArchiveBook.module.css';
 
 interface Props {
@@ -35,45 +36,56 @@ export const ArchiveBook = ({ onClose }: Props) => {
 
       {archive.length === 0 ? (
         <div className={styles.emptyState}>
-          No memories collected yet. Tear a ticket to begin.
+          No memories collected yet. Collect a ticket to begin.
         </div>
       ) : (
-        <div className={styles.list}>
+        <div className={styles.grid}>
           {archive.map((ticket) => (
-            <div key={ticket.id} className={styles.ticketItem}>
-              <div className={styles.ticketHeader}>
-                <h3 className={styles.name}>{ticket.name}</h3>
+            <div key={`${ticket.id}-${ticket.date}`} className={styles.gridItem}>
+              <div className={styles.ticketWrapper}>
+                <TearableTicket 
+                  ticket={{
+                    name: ticket.name,
+                    address: ticket.address || 'Local discovery',
+                    type: ticket.type || 'Experience',
+                    distance: ticket.distance || 'Nearby'
+                  }}
+                  className={styles.miniTicket}
+                  ticketStyle={ticket.style as any || 'classic'}
+                />
+              </div>
+              
+              <div className={styles.ticketInfo}>
                 <span className={styles.date}>
                   {new Date(ticket.date).toLocaleDateString()}
                 </span>
-              </div>
 
-              {editingId === ticket.id ? (
-                <div>
-                  <textarea
-                    className={styles.memoInput}
-                    value={tempMemo}
-                    onChange={(e) => setTempMemo(e.target.value)}
-                    placeholder="Write a memory..."
-                    autoFocus
-                  />
-                  <button 
-                    onClick={() => handleSaveMemo(ticket.id)}
-                    className={styles.closeButton}
-                    style={{ marginTop: '5px' }}
-                  >
-                    Save
-                  </button>
-                </div>
-              ) : (
-                <div onClick={() => startEditing(ticket)} style={{ cursor: 'pointer' }}>
-                  {ticket.memo ? (
-                    <p className={styles.memo}>{ticket.memo}</p>
-                  ) : (
-                    <p className={styles.date}>Click to add memo...</p>
-                  )}
-                </div>
-              )}
+                {editingId === ticket.id ? (
+                  <div className={styles.editArea}>
+                    <textarea
+                      className={styles.memoInput}
+                      value={tempMemo}
+                      onChange={(e) => setTempMemo(e.target.value)}
+                      placeholder="Write a memory..."
+                      autoFocus
+                    />
+                    <button 
+                      onClick={() => handleSaveMemo(ticket.id)}
+                      className={styles.saveButton}
+                    >
+                      Save
+                    </button>
+                  </div>
+                ) : (
+                  <div onClick={() => startEditing(ticket)} className={styles.memoDisplay}>
+                    {ticket.memo ? (
+                      <p className={styles.memoText}>{ticket.memo}</p>
+                    ) : (
+                      <p className={styles.memoPlaceholder}>+ Add memory</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>

@@ -1,9 +1,12 @@
 export interface ArchivedTicket {
   id: string;
   name: string;
-  tearPath: string;
+  address?: string;
+  type?: string;
+  distance?: string;
   memo?: string;
   date: string;
+  style?: string;
 }
 
 const STORAGE_KEY = 'renkit_archive';
