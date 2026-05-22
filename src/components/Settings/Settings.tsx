@@ -87,7 +87,7 @@ export const Settings = ({
               className={styles.toggle}
               onClick={onToggleTheme}
             >
-              {theme === 'light' ? '☀️ Light' : '🌙 Dark'}
+              {theme === 'light' ? 'Light' : 'Dark'}
             </button>
           </div>
           <div className={styles.settingRow}>
@@ -96,7 +96,7 @@ export const Settings = ({
               className={styles.toggle}
               onClick={onToggleTimeFormat}
             >
-              {timeFormat === '12h' ? '🕒 12-Hour' : '🕒 24-Hour'}
+              {timeFormat === '12h' ? '12-Hour' : '24-Hour'}
             </button>
           </div>
         </section>

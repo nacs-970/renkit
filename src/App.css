@@ -188,7 +188,7 @@ main.wide {
   border: 1px solid var(--border);
   color: var(--text-h);
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 0; /* Box no rounding */
   cursor: pointer;
   font-size: 14px;
   display: flex;

@@ -131,7 +131,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(175, 232, 118, 0.1);
+  background: transparent; /* Changed from semi-transparent accent */
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -178,7 +178,7 @@
 
 .memoDisplay {
   cursor: pointer;
-  min-height: 40px;
+  min-height: 20px;
 }
 
 .memoText {
@@ -188,7 +188,10 @@
   margin: 0;
   padding-left: 10px;
   border-left: 2px solid var(--accent);
-  line-height: 1.4;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap; /* Preserve line breaks */
 }
 
 .memoPlaceholder {
@@ -239,6 +242,15 @@
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Drag Selector */
+.dragSelector {
+  position: absolute;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent);
+  pointer-events: none;
+  z-index: 100;
 }
 
 .lightboxOverlay {

@@ -140,10 +140,10 @@ function App() {
 
       <div className="top-nav">
         <button className="nav-button" onClick={() => setView(view === 'main' ? 'archive' : 'main')}>
-          {view === 'main' ? '📜 Archive' : '🎫 Generator'}
+          {view === 'main' ? 'Archive' : 'Generator'}
         </button>
         <button className="nav-button" onClick={() => setIsSettingsOpen(true)}>
-          ⚙️ Settings
+          Settings
         </button>
       </div>
 
