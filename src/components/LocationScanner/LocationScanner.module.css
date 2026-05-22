@@ -1,0 +1,64 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.input {
+  padding: 12px;
+  border: 1px solid var(--text-h);
+  background: var(--bg);
+  color: var(--text-h);
+  font-family: 'Times New Roman', serif;
+  fontSize: 18px;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.attribution {
+  font-size: 10px;
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.submitButton {
+  background: var(--text-h);
+  color: var(--bg);
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+.submitButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

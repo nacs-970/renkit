@@ -1,11 +1,12 @@
 .app-container {
   min-height: 100vh;
-  background: #fdfdfd;
-  color: #000;
+  background: var(--bg);
+  color: var(--text);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 main {
@@ -27,13 +28,15 @@ main {
   text-transform: uppercase;
   letter-spacing: 4px;
   margin-bottom: 10px;
+  color: var(--text-h);
 }
 
 .intro-text {
   font-family: Arial, sans-serif;
   font-size: 14px;
-  color: #666;
+  color: var(--text);
   margin-bottom: 40px;
+  opacity: 0.8;
 }
 
 .ticket-stage {
@@ -50,23 +53,47 @@ main {
 
 .secondary-button {
   background: none;
-  border: 1px solid #000;
-  color: #000;
+  border: 1px solid var(--text-h);
+  color: var(--text-h);
   padding: 10px 20px;
   font-family: Arial, sans-serif;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .secondary-button:hover {
-  background: #f0f0f0;
+  background: var(--accent-bg);
+  border-color: var(--accent);
 }
 
 .loading-screen {
   font-family: 'Times New Roman', serif;
   font-size: 18px;
   font-style: italic;
+  color: var(--text);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-h);
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
 }

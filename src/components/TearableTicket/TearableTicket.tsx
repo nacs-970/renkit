@@ -164,7 +164,7 @@ export const TearableTicket = ({ ticket, onTearComplete }: Props) => {
       {/* Visual tear line while interaction is happening */}
       {isTearing && path && (
         <svg className={styles.tearLineOverlay} width="280" height="450">
-          <path d={path} fill="none" stroke="#000" strokeWidth="1" strokeDasharray="2,2" />
+          <path d={path} fill="none" stroke="var(--text-h)" strokeWidth="1" strokeDasharray="2,2" />
         </svg>
       )}
     </div>

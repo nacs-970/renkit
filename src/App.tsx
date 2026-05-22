@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LocationScanner } from './components/LocationScanner/LocationScanner';
 import { TearableTicket } from './components/TearableTicket/TearableTicket';
 import { MapsService, pickRandomWeighted, type Place } from './services/maps.service';
@@ -9,6 +9,15 @@ function App() {
   const [currentTicket, setCurrentTicket] = useState<Place | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const handleGenerate = async (location: string, radius: number) => {
     setIsGenerating(true);
@@ -44,6 +53,10 @@ function App() {
 
   return (
     <div className="app-container">
+      <button className="theme-toggle" onClick={toggleTheme}>
+        {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+      </button>
+
       <main>
         {!currentTicket && !isGenerating && (
           <div className="welcome-screen">
@@ -52,6 +65,7 @@ function App() {
             <LocationScanner onGenerate={handleGenerate} />
           </div>
         )}
+...
 
         {isGenerating && (
           <div className="loading-screen">
@@ -64,9 +78,9 @@ function App() {
             <TearableTicket 
               ticket={{
                 name: currentTicket.name,
-                address: '124 Baker St, London', // Mocked for now
-                type: 'Cafe & Culture', // Mocked for now
-                distance: '1.2 km' // Mocked for now
+                address: currentTicket.address || 'Local discovery',
+                type: currentTicket.type || 'Experience',
+                distance: currentTicket.distance || 'Nearby'
               }} 
               onTearComplete={handleTearComplete}
             />
