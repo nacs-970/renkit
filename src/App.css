@@ -69,21 +69,20 @@ main {
   border-color: var(--accent);
 }
 
-.loading-screen {
-  font-family: 'Times New Roman', serif;
-  font-size: 18px;
-  font-style: italic;
-  color: var(--text);
-}
-
-.theme-toggle {
+.top-nav {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: none;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+.theme-toggle, .nav-button {
+  background: var(--bg);
   border: 1px solid var(--border);
   color: var(--text-h);
-  padding: 8px 12px;
+  padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
@@ -91,9 +90,12 @@ main {
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
+  box-shadow: var(--shadow);
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover, .nav-button:hover {
   border-color: var(--accent);
   background: var(--accent-bg);
 }
+
+.loading-screen {

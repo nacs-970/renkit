@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { LocationScanner } from './components/LocationScanner/LocationScanner';
 import { TearableTicket } from './components/TearableTicket/TearableTicket';
+import { ArchiveBook } from './components/ArchiveBook/ArchiveBook';
 import { MapsService, pickRandomWeighted, type Place } from './services/maps.service';
 import { StorageService } from './services/storage.service';
 import './App.css';
@@ -10,6 +11,7 @@ function App() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [view, setView] = useState<'main' | 'archive'>('main');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -47,52 +49,61 @@ function App() {
         name: currentTicket.name,
         tearPath: tearPath
       });
-      console.log('Ticket archived!');
     }
   };
 
   return (
     <div className="app-container">
-      <button className="theme-toggle" onClick={toggleTheme}>
-        {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-      </button>
+      <div className="top-nav">
+        <button className="nav-button" onClick={() => setView(view === 'main' ? 'archive' : 'main')}>
+          {view === 'main' ? '📜 Archive' : '🎫 Generator'}
+        </button>
+        <button className="theme-toggle" onClick={toggleTheme}>
+          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+        </button>
+      </div>
 
       <main>
-        {!currentTicket && !isGenerating && (
-          <div className="welcome-screen">
-            <h1 className="logo-text">Random Ticket</h1>
-            <p className="intro-text">Discover your next local destination with a simple tear.</p>
-            <LocationScanner onGenerate={handleGenerate} />
-          </div>
-        )}
-...
+        {view === 'archive' ? (
+          <ArchiveBook onClose={() => setView('main')} />
+        ) : (
+          <>
+            {!currentTicket && !isGenerating && (
+              <div className="welcome-screen">
+                <h1 className="logo-text">Random Ticket</h1>
+                <p className="intro-text">Discover your next local destination with a simple tear.</p>
+                <LocationScanner onGenerate={handleGenerate} />
+              </div>
+            )}
 
-        {isGenerating && (
-          <div className="loading-screen">
-            <p>Scanning local discovery options...</p>
-          </div>
-        )}
+            {isGenerating && (
+              <div className="loading-screen">
+                <p>Scanning local discovery options...</p>
+              </div>
+            )}
 
-        {currentTicket && (
-          <div className="ticket-stage">
-            <TearableTicket 
-              ticket={{
-                name: currentTicket.name,
-                address: currentTicket.address || 'Local discovery',
-                type: currentTicket.type || 'Experience',
-                distance: currentTicket.distance || 'Nearby'
-              }} 
-              onTearComplete={handleTearComplete}
-            />
-            <div className="stage-actions">
-              <button onClick={handleRepick} className="secondary-button">
-                Get Another Option
-              </button>
-              <button onClick={() => setCurrentTicket(null)} className="secondary-button">
-                Start Over
-              </button>
-            </div>
-          </div>
+            {currentTicket && (
+              <div className="ticket-stage">
+                <TearableTicket 
+                  ticket={{
+                    name: currentTicket.name,
+                    address: currentTicket.address || 'Local discovery',
+                    type: currentTicket.type || 'Experience',
+                    distance: currentTicket.distance || 'Nearby'
+                  }} 
+                  onTearComplete={handleTearComplete}
+                />
+                <div className="stage-actions">
+                  <button onClick={handleRepick} className="secondary-button">
+                    Get Another Option
+                  </button>
+                  <button onClick={() => setCurrentTicket(null)} className="secondary-button">
+                    Start Over
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
