@@ -8,7 +8,7 @@
 - **Spec:** `spec.md` implemented.
 - **Design:** `docs/superpowers/specs/2026-05-20-random-ticket-design.md` implemented.
 - **Codebase:** Fully scaffolded and implemented. Main features working (Discovery, Weighted Random, Realistic Tear, Archive).
-- **Archive UI:** `ArchiveBook` component implemented with memo support.
+- **Archive UI:** `ArchiveBook` component implemented with memo support and expanded view (lightbox).
 - **Verification:** Unit tests passing, production build successful.
 
 ## Recent Milestones
@@ -20,6 +20,7 @@
 - [x] TearableTicket UI with SVG masking implemented.
 - [x] End-to-end flow integrated in App.tsx.
 - [x] Archive UI with history and memo editing.
+- [x] Archive expand feature (lightbox view) added.
 
 ## Next Steps
 1. **Review:** Test the tear interaction on mobile/touch devices.

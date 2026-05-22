@@ -11,10 +11,22 @@ export const ArchiveBook = ({ onClose }: Props) => {
   const [archive, setArchive] = useState<ArchivedTicket[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempMemo, setTempMemo] = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     setArchive(StorageService.getArchive());
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && expandedId) {
+        setExpandedId(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [expandedId]);
 
   const handleSaveMemo = (id: string) => {
     StorageService.updateMemo(id, tempMemo);
@@ -26,6 +38,8 @@ export const ArchiveBook = ({ onClose }: Props) => {
     setEditingId(ticket.id);
     setTempMemo(ticket.memo || '');
   };
+
+  const expandedTicket = archive.find(t => t.id === expandedId);
 
   return (
     <div className={styles.container}>
@@ -46,7 +60,7 @@ export const ArchiveBook = ({ onClose }: Props) => {
               className={styles.gridItem}
               style={{ animationDelay: `${index * 0.03}s` }}
             >
-              <div className={styles.ticketWrapper}>
+              <div className={styles.ticketWrapper} onClick={() => setExpandedId(ticket.id)}>
                 <TearableTicket 
                   ticket={{
                     name: ticket.name,
@@ -92,6 +106,23 @@ export const ArchiveBook = ({ onClose }: Props) => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {expandedId && expandedTicket && (
+        <div className={styles.lightboxOverlay} onClick={() => setExpandedId(null)}>
+          <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+            <TearableTicket 
+              ticket={{
+                name: expandedTicket.name,
+                address: expandedTicket.address || 'Local discovery',
+                type: expandedTicket.type || 'Experience',
+                distance: expandedTicket.distance || 'Nearby'
+              }}
+              ticketStyle={expandedTicket.style as any || 'classic'}
+            />
+            <button className={styles.closeLightbox} onClick={() => setExpandedId(null)}>&times;</button>
+          </div>
         </div>
       )}
     </div>
