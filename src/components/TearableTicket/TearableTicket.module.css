@@ -67,7 +67,7 @@
   border-bottom: none;
   background: var(--text-h);
   color: var(--bg);
-  margin: calc(-20px * var(--t-scale)) calc(-20px * var(--t-scale)) calc(25px * var(--t-scale)) calc(-20px * var(--t-scale));
+  margin: calc(-70px * var(--t-scale)) calc(-20px * var(--t-scale)) calc(10px * var(--t-scale)) calc(-20px * var(--t-scale));
   padding: calc(20px * var(--t-scale));
 }
 

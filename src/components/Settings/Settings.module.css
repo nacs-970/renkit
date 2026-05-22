@@ -90,18 +90,18 @@
 .previewWrapper {
   display: flex;
   justify-content: center;
+  align-items: center; /* Center vertically */
   overflow: hidden;
-  min-height: 180px;
+  min-height: 250px; /* Increased height for bigger preview */
   height: auto;
   margin-bottom: 20px;
   background: var(--social-bg);
   border: 1px solid var(--border);
-  padding: 20px 0;
+  padding: 20px;
 }
 
 .previewTicket {
-  transform: scale(0.4);
-  transform-origin: top center;
+  --t-scale: 0.6; /* Increased from 0.4 */
   pointer-events: none;
 }
 
