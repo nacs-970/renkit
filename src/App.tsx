@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { LocationScanner } from './components/LocationScanner/LocationScanner';
 import { TearableTicket } from './components/TearableTicket/TearableTicket';
 import { ArchiveBook } from './components/ArchiveBook/ArchiveBook';
+import { Settings } from './components/Settings/Settings';
 import { MapsService, pickRandomWeighted, type Place } from './services/maps.service';
 import { StorageService } from './services/storage.service';
 import './App.css';
@@ -14,10 +15,23 @@ function App() {
   const [view, setView] = useState<'main' | 'archive'>('main');
   const [showToast, setShowToast] = useState(false);
   const [isArchiving, setIsArchiving] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab' && !isSettingsOpen) {
+        e.preventDefault();
+        setView(prev => prev === 'main' ? 'archive' : 'main');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSettingsOpen]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -68,12 +82,19 @@ function App() {
     <div className="app-container">
       {showToast && <div className="toast">Ticket Archived</div>}
       
+      <Settings 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+
       <div className="top-nav">
         <button className="nav-button" onClick={() => setView(view === 'main' ? 'archive' : 'main')}>
           {view === 'main' ? '📜 Archive' : '🎫 Generator'}
         </button>
-        <button className="theme-toggle" onClick={toggleTheme}>
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+        <button className="nav-button" onClick={() => setIsSettingsOpen(true)}>
+          ⚙️ Settings
         </button>
       </div>
 
