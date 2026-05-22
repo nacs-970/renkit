@@ -19,6 +19,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [ticketKey, setTicketKey] = useState(0);
   const [ticketStyle, setTicketStyle] = useState<TicketStyle>('classic');
+  const [timeFormat, setTimeFormat] = useState<'12h' | '24h'>('12h');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -97,6 +98,12 @@ function App() {
     
     setIsArchiving(true);
     
+    const timeString = new Date().toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: timeFormat === '12h' 
+    });
+
     // Animate archiving (slide into mail slot)
     setTimeout(() => {
       StorageService.saveToArchive({
@@ -105,7 +112,8 @@ function App() {
         address: currentTicket.address || 'Local discovery',
         type: currentTicket.type || 'Experience',
         distance: currentTicket.distance || 'Nearby',
-        style: ticketStyle
+        style: ticketStyle,
+        time: timeString
       });
       
       setCurrentTicket(null);
@@ -126,6 +134,8 @@ function App() {
         onToggleTheme={toggleTheme}
         ticketStyle={ticketStyle}
         onSetTicketStyle={setTicketStyle}
+        timeFormat={timeFormat}
+        onToggleTimeFormat={() => setTimeFormat(prev => prev === '12h' ? '24h' : '12h')}
       />
 
       <div className="top-nav">
@@ -171,7 +181,12 @@ function App() {
                       name: currentTicket.name,
                       address: currentTicket.address || 'Local discovery',
                       type: currentTicket.type || 'Experience',
-                      distance: currentTicket.distance || 'Nearby'
+                      distance: currentTicket.distance || 'Nearby',
+                      time: new Date().toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        hour12: timeFormat === '12h' 
+                      })
                     }} 
                     onClick={handleArchive}
                     className={`${isArchiving ? 'archiving' : ''} ${isPrinting ? 'printing' : ''}`}

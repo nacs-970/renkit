@@ -12,6 +12,10 @@ export const ArchiveBook = ({ onClose }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempMemo, setTempMemo] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  
+  // Selection Mode State
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     setArchive(StorageService.getArchive());
@@ -35,8 +39,44 @@ export const ArchiveBook = ({ onClose }: Props) => {
   };
 
   const startEditing = (ticket: ArchivedTicket) => {
+    if (selectionMode) return; // Don't edit in selection mode
     setEditingId(ticket.id);
     setTempMemo(ticket.memo || '');
+  };
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedIds.size === 0) return;
+    if (window.confirm(`Delete ${selectedIds.size} selected tickets?`)) {
+      StorageService.deleteTickets(Array.from(selectedIds));
+      setArchive(StorageService.getArchive());
+      setSelectedIds(new Set());
+      setSelectionMode(false);
+    }
+  };
+
+  const handleDeleteSingle = (id: string) => {
+    if (window.confirm('Delete this ticket?')) {
+      StorageService.deleteTickets([id]);
+      setArchive(StorageService.getArchive());
+      setExpandedId(null);
+    }
+  };
+
+  const handleTicketClick = (id: string) => {
+    if (selectionMode) {
+      toggleSelection(id);
+    } else {
+      setExpandedId(id);
+    }
   };
 
   const expandedTicket = archive.find(t => t.id === expandedId);
@@ -44,8 +84,29 @@ export const ArchiveBook = ({ onClose }: Props) => {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h2 className={styles.title}>The Archive</h2>
-        <button onClick={onClose} className={styles.closeButton}>Return</button>
+        <div className={styles.headerLeft}>
+          <h2 className={styles.title}>The Archive</h2>
+          {archive.length > 0 && (
+            <button 
+              className={`${styles.navButton} ${selectionMode ? styles.activeNav : ''}`}
+              onClick={() => {
+                setSelectionMode(!selectionMode);
+                setSelectedIds(new Set());
+              }}
+            >
+              {selectionMode ? 'Cancel' : 'Select'}
+            </button>
+          )}
+        </div>
+
+        <div className={styles.headerRight}>
+          {selectionMode && selectedIds.size > 0 && (
+            <button className={styles.deleteButton} onClick={handleDeleteSelected}>
+              Delete ({selectedIds.size})
+            </button>
+          )}
+          <button onClick={onClose} className={styles.closeButton}>Return</button>
+        </div>
       </header>
 
       {archive.length === 0 ? (
@@ -54,58 +115,71 @@ export const ArchiveBook = ({ onClose }: Props) => {
         </div>
       ) : (
         <div className={styles.grid}>
-          {archive.map((ticket, index) => (
-            <div 
-              key={`${ticket.id}-${ticket.date}`} 
-              className={styles.gridItem}
-              style={{ animationDelay: `${index * 0.03}s` }}
-            >
-              <div className={styles.ticketWrapper} onClick={() => setExpandedId(ticket.id)}>
-                <TearableTicket 
-                  ticket={{
-                    name: ticket.name,
-                    address: ticket.address || 'Local discovery',
-                    type: ticket.type || 'Experience',
-                    distance: ticket.distance || 'Nearby'
-                  }}
-                  className={styles.miniTicket}
-                  ticketStyle={ticket.style as any || 'classic'}
-                />
-              </div>
-              
-              <div className={styles.ticketInfo}>
-                <span className={styles.date}>
-                  {new Date(ticket.date).toLocaleDateString()}
-                </span>
+          {archive.map((ticket, index) => {
+            const isSelected = selectedIds.has(ticket.id);
+            return (
+              <div 
+                key={`${ticket.id}-${ticket.date}`} 
+                className={`${styles.gridItem} ${isSelected ? styles.itemSelected : ''}`}
+                style={{ animationDelay: `${index * 0.03}s` }}
+              >
+                <div 
+                  className={styles.ticketWrapper} 
+                  onClick={() => handleTicketClick(ticket.id)}
+                >
+                  <TearableTicket 
+                    ticket={{
+                      name: ticket.name,
+                      address: ticket.address || 'Local discovery',
+                      type: ticket.type || 'Experience',
+                      distance: ticket.distance || 'Nearby',
+                      time: ticket.time
+                    }}
+                    className={styles.miniTicket}
+                    ticketStyle={ticket.style as any || 'classic'}
+                  />
 
-                {editingId === ticket.id ? (
-                  <div className={styles.editArea}>
-                    <textarea
-                      className={styles.memoInput}
-                      value={tempMemo}
-                      onChange={(e) => setTempMemo(e.target.value)}
-                      placeholder="Write a memory..."
-                      autoFocus
-                    />
-                    <button 
-                      onClick={() => handleSaveMemo(ticket.id)}
-                      className={styles.saveButton}
-                    >
-                      Save
-                    </button>
-                  </div>
-                ) : (
-                  <div onClick={() => startEditing(ticket)} className={styles.memoDisplay}>
-                    {ticket.memo ? (
-                      <p className={styles.memoText}>{ticket.memo}</p>
-                    ) : (
-                      <p className={styles.memoPlaceholder}>+ Add memory</p>
-                    )}
-                  </div>
-                )}
+                  {selectionMode && (
+                    <div className={styles.selectionOverlay}>
+                      <div className={`${styles.checkbox} ${isSelected ? styles.checked : ''}`} />
+                    </div>
+                  )}
+                </div>
+                
+                <div className={styles.ticketInfo}>
+                  <span className={styles.date}>
+                    {new Date(ticket.date).toLocaleDateString()}
+                  </span>
+
+                  {editingId === ticket.id ? (
+                    <div className={styles.editArea}>
+                      <textarea
+                        className={styles.memoInput}
+                        value={tempMemo}
+                        onChange={(e) => setTempMemo(e.target.value)}
+                        placeholder="Write a memory..."
+                        autoFocus
+                      />
+                      <button 
+                        onClick={() => handleSaveMemo(ticket.id)}
+                        className={styles.saveButton}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  ) : (
+                    <div onClick={() => startEditing(ticket)} className={styles.memoDisplay}>
+                      {ticket.memo ? (
+                        <p className={styles.memoText}>{ticket.memo}</p>
+                      ) : (
+                        <p className={styles.memoPlaceholder}>+ Add memory</p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -117,11 +191,20 @@ export const ArchiveBook = ({ onClose }: Props) => {
                 name: expandedTicket.name,
                 address: expandedTicket.address || 'Local discovery',
                 type: expandedTicket.type || 'Experience',
-                distance: expandedTicket.distance || 'Nearby'
+                distance: expandedTicket.distance || 'Nearby',
+                time: expandedTicket.time
               }}
               ticketStyle={expandedTicket.style as any || 'classic'}
             />
-            <button className={styles.closeLightbox} onClick={() => setExpandedId(null)}>&times;</button>
+            <div className={styles.lightboxActions}>
+              <button 
+                className={styles.singleDelete}
+                onClick={() => handleDeleteSingle(expandedTicket.id)}
+              >
+                Delete Ticket
+              </button>
+              <button className={styles.closeLightbox} onClick={() => setExpandedId(null)}>&times;</button>
+            </div>
           </div>
         </div>
       )}

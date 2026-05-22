@@ -8,7 +8,7 @@ describe('StorageService', () => {
   });
 
   it('saves and retrieves an archived ticket', () => {
-    const ticket = { id: 'abc', name: 'Test Place', tearPath: 'M0,0 L10,10' };
+    const ticket = { id: 'abc', name: 'Test Place', time: '10:00 AM' };
     StorageService.saveToArchive(ticket);
     const archive = StorageService.getArchive();
     expect(archive).toHaveLength(1);
@@ -17,7 +17,7 @@ describe('StorageService', () => {
   });
 
   it('updates a memo for an existing ticket', () => {
-    const ticket = { id: '123', name: 'Place', tearPath: '...' };
+    const ticket = { id: '123', name: 'Place', time: '10:00 AM' };
     StorageService.saveToArchive(ticket);
     StorageService.updateMemo('123', 'Great coffee!');
     const archive = StorageService.getArchive();

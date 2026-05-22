@@ -6,6 +6,7 @@ export interface ArchivedTicket {
   distance?: string;
   memo?: string;
   date: string;
+  time: string;
   style?: string;
 }
 
@@ -16,6 +17,7 @@ export const StorageService = {
     const archive = this.getArchive();
     const newEntry: ArchivedTicket = { 
       ...ticket, 
+      id: `${ticket.id}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`, // Ensure unique entry ID
       date: new Date().toISOString() 
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify([newEntry, ...archive]));
@@ -30,6 +32,11 @@ export const StorageService = {
     const archive = this.getArchive().map(t => 
       t.id === id ? { ...t, memo } : t
     );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(archive));
+  },
+
+  deleteTickets(ids: string[]) {
+    const archive = this.getArchive().filter(t => !ids.includes(t.id));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(archive));
   }
 };

@@ -8,6 +8,7 @@ interface Props {
     address: string;
     type: string;
     distance: string;
+    time?: string;
   };
   onClick?: () => void;
   className?: string;
@@ -35,6 +36,12 @@ export const TearableTicket = ({ ticket, onClick, className, ticketStyle = 'clas
             <span className={styles.metaLabel}>Distance</span>
             <p className={styles.metaValue}>{ticket.distance}</p>
           </div>
+          {ticket.time && (
+            <div className={styles.meta}>
+              <span className={styles.metaLabel}>Time</span>
+              <p className={styles.metaValue}>{ticket.time}</p>
+            </div>
+          )}
           <div className={styles.meta}>
             <span className={styles.metaLabel}>Type</span>
             <p className={styles.metaValue}>{ticket.type}</p>

@@ -8,6 +8,8 @@ interface Props {
   onToggleTheme: () => void;
   ticketStyle: TicketStyle;
   onSetTicketStyle: (style: TicketStyle) => void;
+  timeFormat: '12h' | '24h';
+  onToggleTimeFormat: () => void;
 }
 
 export const Settings = ({ 
@@ -16,7 +18,9 @@ export const Settings = ({
   theme, 
   onToggleTheme, 
   ticketStyle, 
-  onSetTicketStyle 
+  onSetTicketStyle,
+  timeFormat,
+  onToggleTimeFormat
 }: Props) => {
   if (!isOpen) return null;
 
@@ -51,7 +55,12 @@ export const Settings = ({
                 name: 'Preview Spot',
                 address: '123 Discovery Lane',
                 type: 'Cafe & Culture',
-                distance: '1.2 km'
+                distance: '1.2 km',
+                time: new Date().toLocaleTimeString([], { 
+                  hour: '2-digit', 
+                  minute: '2-digit', 
+                  hour12: timeFormat === '12h' 
+                })
               }}
               ticketStyle={ticketStyle}
               className={styles.previewTicket}
@@ -78,7 +87,16 @@ export const Settings = ({
               className={styles.toggle}
               onClick={onToggleTheme}
             >
-              {theme === 'light' ? 'Dark' : 'Light'}
+              {theme === 'light' ? '☀️ Light' : '🌙 Dark'}
+            </button>
+          </div>
+          <div className={styles.settingRow}>
+            <span className={styles.label}>Time Format</span>
+            <button 
+              className={styles.toggle}
+              onClick={onToggleTimeFormat}
+            >
+              {timeFormat === '12h' ? '🕒 12-Hour' : '🕒 24-Hour'}
             </button>
           </div>
         </section>
