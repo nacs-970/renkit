@@ -92,7 +92,7 @@ main {
   letter-spacing: 2px;
   color: var(--accent);
   opacity: 0.6;
-  height: 20px;
+  height: 12px; /* Normalized height */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,12 +101,14 @@ main {
 /* Mail Slot Target */
 .mail-slot {
   width: 290px;
-  height: 8px;
+  height: 3px;
   background: var(--text-h);
   border-radius: 0; /* Sharp edges */
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-  animation: slotPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: slotPop 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Removed overshoot */
+  margin: 2px 0; /* Ensure total height matches tear-hint (8 + 2*2 = 12) */
 }
+
 
 @keyframes slotPop {
   from { transform: scaleX(0); opacity: 0; }
@@ -208,6 +210,16 @@ main {
 @keyframes pulse {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
+}
+
+.printing {
+  animation: printOut 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top center;
+}
+
+@keyframes printOut {
+  from { transform: translateY(-50%) scaleY(0); opacity: 0; }
+  to { transform: translateY(0) scaleY(1); opacity: 1; }
 }
 
 .archiving {

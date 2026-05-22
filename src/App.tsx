@@ -15,7 +15,9 @@ function App() {
   const [view, setView] = useState<'main' | 'archive'>('main');
   const [showToast, setShowToast] = useState(false);
   const [isArchiving, setIsArchiving] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [ticketKey, setTicketKey] = useState(0);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -23,15 +25,39 @@ function App() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab' && !isSettingsOpen) {
+      if (e.key === 'Escape' && isSettingsOpen) {
+        setIsSettingsOpen(false);
+        return;
+      }
+
+      if (isSettingsOpen) return;
+
+      // Tab: Switch View
+      if (e.key === 'Tab') {
         e.preventDefault();
         setView(prev => prev === 'main' ? 'archive' : 'main');
+      }
+
+      // Only shortcut when in Generator view and ticket exists
+      if (view === 'main' && currentTicket && !isArchiving && !isPrinting) {
+        if (e.key === ' ') {
+          e.preventDefault();
+          handleRepick();
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleArchive();
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          setCurrentTicket(null);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSettingsOpen]);
+  }, [isSettingsOpen, view, currentTicket, isArchiving, isPrinting]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -43,7 +69,7 @@ function App() {
       const results = await MapsService.fetchNearbyPlaces(location, radius);
       setPlaces(results);
       const chosen = pickRandomWeighted(results);
-      setCurrentTicket(chosen);
+      triggerPrint(chosen);
     } catch (error) {
       console.error('Failed to fetch places:', error);
     } finally {
@@ -54,12 +80,19 @@ function App() {
   const handleRepick = () => {
     if (places.length > 0) {
       const chosen = pickRandomWeighted(places);
-      setCurrentTicket(chosen);
+      triggerPrint(chosen);
     }
   };
 
+  const triggerPrint = (ticket: Place) => {
+    setCurrentTicket(ticket);
+    setTicketKey(Date.now());
+    setIsPrinting(true);
+    setTimeout(() => setIsPrinting(false), 800);
+  };
+
   const handleArchive = () => {
-    if (!currentTicket || isArchiving) return;
+    if (!currentTicket || isArchiving || isPrinting) return;
     
     setIsArchiving(true);
     
@@ -120,25 +153,27 @@ function App() {
             {currentTicket && (
               <div className="ticket-stage">
                 <div className="mail-system">
-                  {isArchiving ? (
+                  {(isArchiving || isPrinting) ? (
                     <div className="mail-slot" />
                   ) : (
                     <div className="tear-hint">Tap to Collect</div>
                   )}
                   
                   <TearableTicket 
+                    key={isPrinting ? `${currentTicket.id}-${Date.now()}` : `${currentTicket.id}-${ticketKey}`}
                     ticket={{
                       name: currentTicket.name,
+
                       address: currentTicket.address || 'Local discovery',
                       type: currentTicket.type || 'Experience',
                       distance: currentTicket.distance || 'Nearby'
                     }} 
                     onClick={handleArchive}
-                    className={isArchiving ? 'archiving' : ''}
+                    className={`${isArchiving ? 'archiving' : ''} ${isPrinting ? 'printing' : ''}`}
                   />
                 </div>
 
-                {!isArchiving && (
+                {!isArchiving && !isPrinting && (
                   <div className="stage-actions">
                     <button onClick={handleRepick} className="secondary-button">
                       Get Another Option
