@@ -198,7 +198,7 @@ main.wide {
   box-shadow: var(--shadow);
 }
 
-.theme-toggle:hover, .nav-button:hover {
+.theme-toggle:hover, .nav-button:hover, .nav-button.active {
   border-color: var(--accent);
   background: var(--accent-bg);
 }

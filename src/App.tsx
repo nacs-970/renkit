@@ -139,8 +139,17 @@ function App() {
       />
 
       <div className="top-nav">
-        <button className="nav-button" onClick={() => setView(view === 'main' ? 'archive' : 'main')}>
-          {view === 'main' ? 'Archive' : 'Generator'}
+        <button 
+          className={`nav-button ${view === 'main' ? 'active' : ''}`} 
+          onClick={() => setView('main')}
+        >
+          Generator
+        </button>
+        <button 
+          className={`nav-button ${view === 'archive' ? 'active' : ''}`} 
+          onClick={() => setView('archive')}
+        >
+          Archive
         </button>
         <button className="nav-button" onClick={() => setIsSettingsOpen(true)}>
           Settings
