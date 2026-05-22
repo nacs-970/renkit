@@ -155,7 +155,7 @@ function App() {
             {!currentTicket && !isGenerating && (
               <div className="welcome-screen">
                 <h1 className="logo-text">Renkit</h1>
-                <p className="intro-text">Discover your next local destination with a simple tear.</p>
+                <p className="intro-text">Go somewhere.</p>
                 <LocationScanner onGenerate={handleGenerate} />
               </div>
             )}

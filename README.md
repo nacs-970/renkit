@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# Renkit
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Renkit** is a minimalist, aesthetic local discovery service that helps you "Go somewhere." Discover hidden gems, cafes, and experiences nearby with a satisfying, tactile digital experience.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Local Discovery**: Powered by Photon OSM (OpenStreetMap), finding nearby points of interest based on your location.
+- **Dynamic Tickets**: Tickets grow to fit long names and show metadata like distance, type, and collection time.
+- **Tactile Interactions**:
+  - **Mail-Slot Archive**: Tickets slide into a sharp mailbox slot to be saved.
+  - **Print-Out Animation**: New discoveries "print out" from the slot like a receipt.
+- **Customizable Experience**:
+  - **Styles**: Choose between **Classic** (Serif), **Modern** (Sans-serif), and **Mono** (Brutalist).
+  - **Branding**: Dynamic accent color selector (try `#AFE876` for the signature look).
+  - **Themes**: Full support for Light and Dark modes.
+- **Archive Grid**: Browse your collection in a staggered responsive grid with unique entry persistence and memo support.
+- **Keyboard Power**: Navigate and manage your tickets entirely via shortcuts.
 
-## React Compiler
+## ⌨️ Keyboard Shortcuts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Key | Action |
+|-----|--------|
+| **Tab** | Switch between Generator and Archive |
+| **Space** | Get Another Option (Repick) |
+| **Enter** | Archive current ticket |
+| **Esc** | Start over / Close Settings / Cancel Selection |
+| **Backspace/Del** | Delete selected ticket(s) in Archive |
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Framework**: React 19 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: CSS Modules (Vanilla CSS)
+- **API**: Photon OSM (OpenStreetMap)
+- **State**: Local Storage for persistent archive
+- **Testing**: Vitest
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. **Run development server**:
+   ```bash
+   npm run dev
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3. **Build for production**:
+   ```bash
+   npm run build
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+4. **Run tests**:
+   ```bash
+   npm test
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📝 Project Structure
+
+- `src/components/TearableTicket`: The core ticket component with dynamic scaling and styles.
+- `src/components/ArchiveBook`: The grid-based gallery for collected tickets.
+- `src/components/LocationScanner`: Location entry and radius control.
+- `src/components/Settings`: Global preferences and appearance customization.
+- `src/services`: Maps integration and LocalStorage management.
+
+---
+
+*Go somewhere.*

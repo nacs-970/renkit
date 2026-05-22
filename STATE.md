@@ -21,8 +21,9 @@
 - [x] End-to-end flow integrated in App.tsx.
 - [x] Archive UI with history and memo editing.
 - [x] Archive expand feature (lightbox view) added.
+- [x] Applied multi-agent review fixes (accessibility, mobile polish, performance).
 
 ## Next Steps
-1. **Review:** Test the tear interaction on mobile/touch devices.
-2. **Mobile:** Improve responsiveness for small screens.
-3. **Animations:** Add subtle transitions between screens.
+1. **Mobile:** Test the tap-to-archive interaction on physical devices.
+2. **Responsiveness:** Ensure the grid layout is optimal for tablet sizes.
+3. **Refinement:** Add subtle hover effects to settings toggles.

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { StorageService, type ArchivedTicket } from '../../services/storage.service';
 import { TearableTicket } from '../TearableTicket/TearableTicket';
 import styles from './ArchiveBook.module.css';
@@ -165,7 +165,10 @@ export const ArchiveBook = ({ onClose }: Props) => {
     setDragRect(null);
   };
 
-  const expandedTicket = archive.find(t => t.id === expandedId);
+  const expandedTicket = useMemo(() => 
+    archive.find(t => t.id === expandedId),
+    [archive, expandedId]
+  );
 
   return (
     <div className={styles.container}>
@@ -293,6 +296,13 @@ export const ArchiveBook = ({ onClose }: Props) => {
       {expandedId && expandedTicket && (
         <div className={styles.lightboxOverlay} onClick={() => setExpandedId(null)}>
           <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
+            <button 
+              className={styles.closeLightbox} 
+              onClick={() => setExpandedId(null)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
             <TearableTicket 
               ticket={{
                 name: expandedTicket.name,
@@ -310,7 +320,6 @@ export const ArchiveBook = ({ onClose }: Props) => {
               >
                 Delete Ticket
               </button>
-              <button className={styles.closeLightbox} onClick={() => setExpandedId(null)}>&times;</button>
             </div>
           </div>
         </div>

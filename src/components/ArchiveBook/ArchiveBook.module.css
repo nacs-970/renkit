@@ -313,6 +313,15 @@
   opacity: 1;
 }
 
+@media (max-width: 600px) {
+  .closeLightbox {
+    top: 5px;
+    right: 5px;
+    color: var(--text-h); /* Contrast against ticket background */
+    font-size: 32px;
+  }
+}
+
 @keyframes scaleUp {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
