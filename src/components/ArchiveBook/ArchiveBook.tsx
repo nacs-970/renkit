@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { toPng } from 'html-to-image';
 import { StorageService, type ArchivedTicket } from '../../services/storage.service';
 import { TearableTicket } from '../TearableTicket/TearableTicket';
 import styles from './ArchiveBook.module.css';
@@ -12,6 +13,7 @@ export const ArchiveBook = ({ onClose }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempMemo, setTempMemo] = useState('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   // Selection Mode State
   const [selectionMode, setSelectionMode] = useState(false);
@@ -23,6 +25,7 @@ export const ArchiveBook = ({ onClose }: Props) => {
   const [dragRect, setDragRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const hasDragged = useRef(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setArchive(StorageService.getArchive());
@@ -93,6 +96,34 @@ export const ArchiveBook = ({ onClose }: Props) => {
       StorageService.deleteTickets([id]);
       setArchive(StorageService.getArchive());
       setExpandedId(null);
+    }
+  };
+
+  const handleDownload = async (ticket: ArchivedTicket) => {
+    if (!ticketRef.current || isDownloading) return;
+    
+    setIsDownloading(true);
+    try {
+      const timeString = (ticket.time || 'unknown').replace(/[:\s]/g, '-').toLowerCase();
+      
+      const dataUrl = await toPng(ticketRef.current, {
+        cacheBust: true,
+        backgroundColor: 'var(--bg)',
+        style: {
+          transform: 'scale(1)',
+          borderRadius: '0'
+        }
+      });
+      
+      const link = document.createElement('a');
+      const safeName = ticket.name.toLowerCase().replace(/\s+/g, '-');
+      link.download = `renkit-ticket-${safeName}-${timeString}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to download ticket:', err);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -323,17 +354,26 @@ export const ArchiveBook = ({ onClose }: Props) => {
             >
               &times;
             </button>
-            <TearableTicket 
-              ticket={{
-                name: expandedTicket.name,
-                address: expandedTicket.address || 'Local discovery',
-                type: expandedTicket.type || 'Experience',
-                distance: expandedTicket.distance || 'Nearby',
-                time: expandedTicket.time
-              }}
-              ticketStyle={expandedTicket.style as any || 'classic'}
-            />
+            <div ref={ticketRef} style={{ display: 'inline-block' }}>
+              <TearableTicket 
+                ticket={{
+                  name: expandedTicket.name,
+                  address: expandedTicket.address || 'Local discovery',
+                  type: expandedTicket.type || 'Experience',
+                  distance: expandedTicket.distance || 'Nearby',
+                  time: expandedTicket.time
+                }}
+                ticketStyle={expandedTicket.style as any || 'classic'}
+              />
+            </div>
             <div className={styles.lightboxActions}>
+              <button 
+                className={styles.downloadButton}
+                onClick={() => handleDownload(expandedTicket)}
+                disabled={isDownloading}
+              >
+                {isDownloading ? 'Downloading...' : 'Download Image'}
+              </button>
               <button 
                 className={styles.singleDelete}
                 onClick={() => handleDeleteSingle(expandedTicket.id)}

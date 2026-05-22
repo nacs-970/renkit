@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { toPng } from 'html-to-image';
 import { LocationScanner } from './components/LocationScanner/LocationScanner';
 import { TearableTicket, type TicketStyle } from './components/TearableTicket/TearableTicket';
 import { ArchiveBook } from './components/ArchiveBook/ArchiveBook';
@@ -20,6 +21,8 @@ function App() {
   const [ticketKey, setTicketKey] = useState(0);
   const [ticketStyle, setTicketStyle] = useState<TicketStyle>('classic');
   const [timeFormat, setTimeFormat] = useState<'12h' | '24h'>('12h');
+  const [isDownloading, setIsDownloading] = useState(false);
+  const ticketRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -91,6 +94,38 @@ function App() {
     setTicketKey(Date.now());
     setIsPrinting(true);
     setTimeout(() => setIsPrinting(false), 800);
+  };
+
+  const handleDownload = async () => {
+    if (!ticketRef.current || !currentTicket || isDownloading) return;
+    
+    setIsDownloading(true);
+    try {
+      const timeString = new Date().toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: timeFormat === '12h' 
+      }).replace(/[:\s]/g, '-').toLowerCase();
+
+      const dataUrl = await toPng(ticketRef.current, {
+        cacheBust: true,
+        backgroundColor: 'var(--bg)',
+        style: {
+          transform: 'scale(1)',
+          borderRadius: '0'
+        }
+      });
+      
+      const link = document.createElement('a');
+      const safeName = currentTicket.name.toLowerCase().replace(/\s+/g, '-');
+      link.download = `renkit-ticket-${safeName}-${timeString}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to download ticket:', err);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleArchive = () => {
@@ -184,27 +219,32 @@ function App() {
                     <div className="tear-hint">Tap to Collect</div>
                   )}
                   
-                  <TearableTicket 
-                    key={isPrinting ? `${currentTicket.id}-${Date.now()}` : `${currentTicket.id}-${ticketKey}`}
-                    ticket={{
-                      name: currentTicket.name,
-                      address: currentTicket.address || 'Local discovery',
-                      type: currentTicket.type || 'Experience',
-                      distance: currentTicket.distance || 'Nearby',
-                      time: new Date().toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit', 
-                        hour12: timeFormat === '12h' 
-                      })
-                    }} 
-                    onClick={handleArchive}
-                    className={`${isArchiving ? 'archiving' : ''} ${isPrinting ? 'printing' : ''}`}
-                    ticketStyle={ticketStyle}
-                  />
+                  <div ref={ticketRef} style={{ display: 'inline-block' }}>
+                    <TearableTicket 
+                      key={isPrinting ? `${currentTicket.id}-${Date.now()}` : `${currentTicket.id}-${ticketKey}`}
+                      ticket={{
+                        name: currentTicket.name,
+                        address: currentTicket.address || 'Local discovery',
+                        type: currentTicket.type || 'Experience',
+                        distance: currentTicket.distance || 'Nearby',
+                        time: new Date().toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit', 
+                          hour12: timeFormat === '12h' 
+                        })
+                      }} 
+                      onClick={handleArchive}
+                      className={`${isArchiving ? 'archiving' : ''} ${isPrinting ? 'printing' : ''}`}
+                      ticketStyle={ticketStyle}
+                    />
+                  </div>
                 </div>
 
                 {!isArchiving && !isPrinting && (
                   <div className="stage-actions">
+                    <button onClick={handleDownload} className="secondary-button" disabled={isDownloading}>
+                      {isDownloading ? 'Downloading...' : 'Download Image'}
+                    </button>
                     <button onClick={handleRepick} className="secondary-button">
                       Get Another Option
                     </button>

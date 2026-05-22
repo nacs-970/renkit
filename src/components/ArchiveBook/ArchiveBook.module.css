@@ -295,6 +295,22 @@
   letter-spacing: 1px;
 }
 
+.downloadButton {
+  background: var(--text-h);
+  color: var(--bg);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.downloadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .closeLightbox {
   position: absolute;
   top: -40px;
