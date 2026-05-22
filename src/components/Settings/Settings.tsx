@@ -10,6 +10,8 @@ interface Props {
   onSetTicketStyle: (style: TicketStyle) => void;
   timeFormat: '12h' | '24h';
   onToggleTimeFormat: () => void;
+  downloadQuality: number;
+  onSetDownloadQuality: (quality: number) => void;
 }
 
 export const Settings = ({ 
@@ -20,7 +22,9 @@ export const Settings = ({
   ticketStyle, 
   onSetTicketStyle,
   timeFormat,
-  onToggleTimeFormat
+  onToggleTimeFormat,
+  downloadQuality,
+  onSetDownloadQuality
 }: Props) => {
   if (!isOpen) return null;
 
@@ -98,6 +102,20 @@ export const Settings = ({
             >
               {timeFormat === '12h' ? '12-Hour' : '24-Hour'}
             </button>
+          </div>
+          <div className={styles.settingRow}>
+            <span className={styles.label}>Download Quality</span>
+            <div className={styles.qualityToggle}>
+              {[1, 2, 3].map((q) => (
+                <button 
+                  key={q}
+                  className={`${styles.smallToggle} ${downloadQuality === q ? styles.toggleActive : ''}`}
+                  onClick={() => onSetDownloadQuality(q)}
+                >
+                  {q}x
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 

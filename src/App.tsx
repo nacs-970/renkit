@@ -21,6 +21,7 @@ function App() {
   const [ticketKey, setTicketKey] = useState(0);
   const [ticketStyle, setTicketStyle] = useState<TicketStyle>('classic');
   const [timeFormat, setTimeFormat] = useState<'12h' | '24h'>('12h');
+  const [downloadQuality, setDownloadQuality] = useState<number>(2);
   const [isDownloading, setIsDownloading] = useState(false);
   const ticketRef = useRef<HTMLDivElement>(null);
 
@@ -110,6 +111,7 @@ function App() {
       const dataUrl = await toPng(ticketRef.current, {
         cacheBust: true,
         backgroundColor: 'var(--bg)',
+        pixelRatio: downloadQuality,
         style: {
           transform: 'scale(1)',
           borderRadius: '0'
@@ -171,6 +173,8 @@ function App() {
         onSetTicketStyle={setTicketStyle}
         timeFormat={timeFormat}
         onToggleTimeFormat={() => setTimeFormat(prev => prev === '12h' ? '24h' : '12h')}
+        downloadQuality={downloadQuality}
+        onSetDownloadQuality={setDownloadQuality}
       />
 
       <div className="top-nav">
@@ -193,7 +197,7 @@ function App() {
 
       <main className={view === 'archive' ? 'wide' : ''}>
         {view === 'archive' ? (
-          <ArchiveBook onClose={() => setView('main')} />
+          <ArchiveBook onClose={() => setView('main')} downloadQuality={downloadQuality} />
         ) : (
           <>
             {!currentTicket && !isGenerating && (

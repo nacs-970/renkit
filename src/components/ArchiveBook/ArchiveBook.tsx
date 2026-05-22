@@ -6,9 +6,10 @@ import styles from './ArchiveBook.module.css';
 
 interface Props {
   onClose: () => void;
+  downloadQuality: number;
 }
 
-export const ArchiveBook = ({ onClose }: Props) => {
+export const ArchiveBook = ({ onClose, downloadQuality }: Props) => {
   const [archive, setArchive] = useState<ArchivedTicket[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempMemo, setTempMemo] = useState('');
@@ -109,6 +110,7 @@ export const ArchiveBook = ({ onClose }: Props) => {
       const dataUrl = await toPng(ticketRef.current, {
         cacheBust: true,
         backgroundColor: 'var(--bg)',
+        pixelRatio: downloadQuality,
         style: {
           transform: 'scale(1)',
           borderRadius: '0'
