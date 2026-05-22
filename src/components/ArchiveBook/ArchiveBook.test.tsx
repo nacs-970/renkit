@@ -37,7 +37,7 @@ describe('ArchiveBook', () => {
   });
 
   it('reproduces selection bug: click should select and stay selected', () => {
-    render(<ArchiveBook onClose={() => {}} />);
+    render(<ArchiveBook onClose={() => {}} downloadQuality={2} />);
     
     // Enter selection mode
     const selectButton = screen.getByText('Select');
