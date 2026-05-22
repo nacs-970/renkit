@@ -21,6 +21,7 @@ export const ArchiveBook = ({ onClose }: Props) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const [dragRect, setDragRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  const hasDragged = useRef(false);
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,6 +97,11 @@ export const ArchiveBook = ({ onClose }: Props) => {
   };
 
   const handleTicketClick = (id: string) => {
+    if (hasDragged.current) {
+      hasDragged.current = false;
+      return;
+    }
+    
     if (selectionMode) {
       toggleSelection(id);
     } else {
@@ -105,6 +111,7 @@ export const ArchiveBook = ({ onClose }: Props) => {
 
   // Drag Selection Handlers
   const onMouseDown = (e: React.MouseEvent) => {
+    hasDragged.current = false;
     if (!selectionMode || !gridRef.current) return;
     // Only start drag if clicking the grid background or a wrapper, not buttons
     if ((e.target as HTMLElement).closest('button')) return;
@@ -123,6 +130,19 @@ export const ArchiveBook = ({ onClose }: Props) => {
     const rect = gridRef.current.getBoundingClientRect();
     const currentX = e.clientX - rect.left + gridRef.current.scrollLeft;
     const currentY = e.clientY - rect.top + gridRef.current.scrollTop;
+
+    // Only start "dragging" if moved more than 5px to prevent jitter clicks
+    if (!hasDragged.current) {
+      const distance = Math.sqrt(
+        Math.pow(currentX - dragStart.x, 2) + 
+        Math.pow(currentY - dragStart.y, 2)
+      );
+      if (distance > 5) {
+        hasDragged.current = true;
+      } else {
+        return;
+      }
+    }
 
     const left = Math.min(dragStart.x, currentX);
     const top = Math.min(dragStart.y, currentY);
